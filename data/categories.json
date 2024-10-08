@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name": "Electronics",
+        "description": "Devices and gadgets such as phones, tablets, and computers."
+    },
+    {
+        "id": 2,
+        "name": "Books",
+        "description": "A collection of various genres and authors."
+    },
+    {
+        "id": 3,
+        "name": "Clothing",
+        "description": "Apparel for men, women, and children."
+    },
+    {
+        "id": 4,
+        "name": "Home & Kitchen",
+        "description": "Products for home improvement and kitchen essentials."
+    },
+    {
+        "id": 5,
+        "name": "Toys",
+        "description": "Games and toys for children of all ages."
+    }
+]
