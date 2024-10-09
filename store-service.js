@@ -32,7 +32,6 @@ module.exports.initialize = function() {
     });
 };
 
-
 module.exports.getAllItems = function() {
     return new Promise((resolve, reject) => {
         if (items.length === 0) {
