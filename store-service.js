@@ -1,64 +1,109 @@
-const fs = require('fs');
+const fs = require("fs");
 
-let items = [];
-let categories = [];
+let items;
+let categories;
 
-module.exports.initialize = function() {
+fs.readFile("./data/items.json", "utf8", (err, jsonString) => {
+    if (err) {
+        console.log("File read error:", err);
+        return;
+    }
+    // console.log("File data:", jsonString);
+});
+
+module.exports.initialize = function () {
     return new Promise((resolve, reject) => {
-        Promise.all([
-            new Promise((resolve, reject) => {
-                fs.readFile('./data/items.json', 'utf8', (err, data) => {
-                    if (err) {
-                        reject("Unable to read items file");
-                    } else {
-                        items = JSON.parse(data);
-                        resolve();
-                    }
-                });
-            }),
-            new Promise((resolve, reject) => {
-                fs.readFile('./data/categories.json', 'utf8', (err, data) => {
-                    if (err) {
-                        reject("Unable to read categories file");
-                    } else {
-                        categories = JSON.parse(data);
-                        resolve();
-                    }
-                });
-            })
-        ])
-        .then(() => resolve())
-        .catch(err => reject(err));
+        fs.readFile("./data/items.json", "utf8", (err, jsonString) => {
+            if (err) {
+                console.log("File read error:", err);
+                reject("Unable to read item file");
+                return;
+            }
+            items = JSON.parse(jsonString);
+
+            // Continue to read categories
+            fs.readFile("./data/categories.json", "utf8", (err, jsonString) => {
+                if (err) {
+                    console.log("File read error:", err);
+                    reject("Unable to read category file");
+                    return;
+                }
+                categories = JSON.parse(jsonString);
+            });
+            resolve();
+        });
     });
 };
 
-module.exports.getAllItems = function() {
+module.exports.getAllItems = function () {
+    // console.log("items.length is", items.length);
     return new Promise((resolve, reject) => {
-        if (items.length === 0) {
-            reject("No items found");
-        } else {
-            resolve(items);
-        }
+        console.log("RETURNING OBJ OF LENGTH", items.length);
+        items.length != 0 ? resolve(items) : reject("Items array is empty!");
     });
 };
 
-
-module.exports.getCategories = function() {
+module.exports.getAllCategories = function () {
+    // return categories;
     return new Promise((resolve, reject) => {
-        if (categories.length === 0) {
-            reject("No categories found");
-        } else {
-            resolve(categories);
-        }
+        categories.length != 0
+            ? resolve(categories)
+            : reject("Categories array is empty!");
     });
 };
-module.exports.getPublishedItems = function() {
+
+module.exports.getPublishedItems = function () {
+    // return items.filter((item) => (item.published = true));
     return new Promise((resolve, reject) => {
-        const publishedItems = items.filter(item => item.published);
-        if (publishedItems.length > 0) {
-            resolve(publishedItems);
+        items.length != 0
+            ? resolve(items.filter((item) => item.published == true))
+            : reject("No published items found!");
+    });
+};
+
+// new stuff
+module.exports.addItem = function (itemData) {
+    return new Promise((resolve, reject) => {
+        if (itemData.published == undefined) {
+            itemData.published = false;
         } else {
-            reject("No results returned");
+            itemData.published = true;
         }
+        itemData.id = items.length + 1;
+        items.push(itemData);
+        resolve(itemData);
+    });
+};
+
+module.exports.getItemsByCategory = function (category) {
+    return new Promise((resolve, reject) => {
+        items.length != 0
+            ? resolve(items.filter((item) => item.category == category))
+            : reject("No items with category", category);
+    });
+};
+
+module.exports.getItemsByMinDate = function (minDateStr) {
+    const minDate = new Date(minDateStr);
+    let postDateItems = [];
+
+    return new Promise((resolve, reject) => {
+        if (items.length) {
+            for (item of items) {
+                const itemDate = new Date(item.postDate);
+                if (itemDate >= minDate) postDateItems.push(item);
+            }
+            postDateItems.length > 0
+                ? resolve(postDateItems)
+                : reject("No items with minDate", minDateStr);
+        }
+        reject("Unknown Error on retrieving items by minDate");
+    });
+};
+
+module.exports.getItemById = function (itemId) {
+    return new Promise((resolve, reject) => {
+        const itemMatch = items.find((item) => item.id == itemId);
+        itemMatch ? resolve(itemMatch) : reject("No item of id", itemId);
     });
 };
