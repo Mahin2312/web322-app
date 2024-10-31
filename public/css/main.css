@@ -1,8 +1,14 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+    padding-top: 80px; 
+
 }
 
 h2 {
     color: blue;
+}
+
+.navbar-nav .nav-item {
+    margin-right: 10px; 
 }
