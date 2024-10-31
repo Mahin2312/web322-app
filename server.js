@@ -5,7 +5,7 @@ I declare that this assignment is my own work in accordance with Seneca  Academi
 Name: Mahin Ibne Alam 
 Student ID: 124384231
 Date: 31st October 2024
-Glitch Web App URL: https://economic-miniature-ferry.glitch.me
+Glitch Web App URL: https://rainy-immense-stream.glitch.me
 GitHub Repository URL: https://github.com/Mahin2312/web322-app
 ********************************************************************************/ 
 
