@@ -1,0 +1,63 @@
+{{#if data.item}} <!-- Check if there is a current item -->
+<item>
+  <div class="row">
+    <div class="col-4">
+      <h2>{{data.item.title}}</h2> <!-- Display the title of the current item -->
+      <!-- Show the feature image of the item -->
+<img
+    src="{{data.item.featureImage}}" 
+    alt="Feature Image"
+    style="width:100%" />
+
+    </div>
+
+    <div class="col-8">
+      <br /><br />
+      <div class="row">
+        <div class="col-12">
+          {{#safeHTML data.item.body}}{{/safeHTML}} <!-- Display the item body with safeHTML -->
+          <br /><br />
+          <strong>Price:</strong> ${{data.item.price}} <!-- Show the price of the item -->
+          <br />
+          <strong>Category:</strong> {{data.item.category}} <!-- Show the category of the item -->
+          <br />
+          <strong>Last Updated:</strong> {{data.item.postDate}} <!-- Show the last updated date -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Display items list if data.items is not empty -->
+  {{#if data.items}} 
+    <h4>Items</h4>
+    <div class="row">
+      {{#each data.items}} <!-- Loop through all items -->
+        <div class="col-md-4">
+          <div class="item">
+            <h5>{{this.title}}</h5>
+            <a href="/shop/{{this.id}}?category={{../viewingCategory}}">View Details</a>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  <!-- Display categories list if data.categories is not empty -->
+  {{#if data.categories}}
+    <h4>Categories</h4>
+    <div class="row">
+      {{#each data.categories}} <!-- Loop through all categories -->
+        <div class="col-md-3">
+          <a href="/shop?category={{this.id}}">{{this.name}}</a> <!-- Display each category link -->
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+</item>
+
+{{else}} <!-- Display a message if no item is found -->
+  <div class="col-md-12 text-center">
+    <h2>{{data.message}}</h2> <!-- Show error message -->
+    <p>Please try another Item / Category</p>
+  </div>
+{{/if}}

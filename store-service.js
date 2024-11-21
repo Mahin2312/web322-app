@@ -1,5 +1,6 @@
 const fs = require("fs");
 
+
 let items;
 let categories;
 
@@ -64,12 +65,9 @@ module.exports.getPublishedItems = function () {
 // new stuff
 module.exports.addItem = function (itemData) {
     return new Promise((resolve, reject) => {
-        if (itemData.published == undefined) {
-            itemData.published = false;
-        } else {
-            itemData.published = true;
-        }
-        itemData.id = items.length + 1;
+        itemData.published = itemData.published === "true";
+        itemData.id = items.length + 1 ; // Use a unique ID based on timestamp
+        itemData.postDate = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
         items.push(itemData);
         resolve(itemData);
     });
@@ -107,3 +105,21 @@ module.exports.getItemById = function (itemId) {
         itemMatch ? resolve(itemMatch) : reject("No item of id", itemId);
     });
 };
+
+//Assignment 4
+// In store-service.js
+async function getPublishedItemsByCategory(category) {
+    try {
+      // Assuming items are stored in a database or similar, filter by published status and category
+      const items = await db.collection('items').find({
+        published: true,
+        category: category
+      }).toArray();
+  
+      return items; // Return filtered items
+    } catch (error) {
+      console.error('Error fetching items by category:', error);
+      throw error;
+    }
+  }
+  
