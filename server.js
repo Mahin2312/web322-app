@@ -21,6 +21,7 @@ const storeService = require("./store-service.js");
 const itemData = require("./store-service");
 const app = express();
 const upload = multer();
+app.use(express.urlencoded({ extended: true })); 
 
 const HTTP_PORT = process.env.PORT || 8080;
 
