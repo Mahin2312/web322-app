@@ -1,0 +1,23 @@
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Add Category</h2>
+        <hr />
+        <!-- Form to add a new category -->
+        <form action="/categories/add" method="POST">
+            <div class="form-group">
+                <label for="category">Category Name:</label>
+                <input 
+                    type="text" 
+                    name="category" 
+                    id="category" 
+                    class="form-control" 
+                    required 
+                    autofocus
+                />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Add Category</button>
+            </div>
+        </form>
+    </div>
+</div>

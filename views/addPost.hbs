@@ -42,12 +42,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="category">Category:</label>
-                        <select class="form-control" name="category" id="category">
-                            <option value="1">Home, Garden</option>
-                            <option value="2">Electronics, Computers, Video Games</option>
-                            <option value="3">Clothing</option>
-                            <option value="4">Sports & Outdoors</option>
-                            <option value="5">Pets</option>
+                        <select class="form-control" name="category" id="category" required>
+                            <option value="">Select Category</option>
+                            {{#each categories}}
+                                <option value="{{this.id}}">{{this.category}}</option>
+                            {{/each}}
                         </select>
                     </div>
                 </div>

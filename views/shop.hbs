@@ -4,10 +4,10 @@
     <div class="col-4">
       <h2>{{data.item.title}}</h2> <!-- Display the title of the current item -->
       <!-- Show the feature image of the item -->
-<img
-    src="{{data.item.featureImage}}" 
-    alt="Feature Image"
-    style="width:100%" />
+      <img
+        src="{{data.item.featureImage}}" 
+        alt="Feature Image"
+        style="width:100%" />
 
     </div>
 
@@ -21,7 +21,7 @@
           <br />
           <strong>Category:</strong> {{data.item.category}} <!-- Show the category of the item -->
           <br />
-          <strong>Last Updated:</strong> {{data.item.postDate}} <!-- Show the last updated date -->
+          <strong>Last Updated:</strong> {{#formatDate data.item.postDate}}{{/formatDate}} <!-- Use formatDate helper -->
         </div>
       </div>
     </div>
