@@ -21,6 +21,28 @@
                     {{#navLink "/shop"}}Shop{{/navLink}}
                     {{#navLink "/categories"}}Categories{{/navLink}}
                 </ul>
+
+                <!-- Conditionally rendered links based on session.user -->
+                {{#if session.user}}
+                    <!-- If user is logged in -->
+                    <form class="navbar-form navbar-right">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" type="button">
+                                <span class="bi bi-person"></span>&nbsp;&nbsp;{{session.user.userName}}&nbsp;&nbsp;
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/userHistory">User History</a>
+                                <a class="dropdown-item" href="/logout">Log Out</a>
+                            </div>
+                        </div>
+                    </form>
+                {{else}}
+                    <!-- If user is NOT logged in -->
+                    <form class="navbar-form navbar-right">
+                        <a href="/register" class="btn btn-success"><span class="bi bi-cog"></span>&nbsp;&nbsp;Register</a>
+                        <a href="/login" class="btn btn-primary"><span class="bi bi-chevron-right"></span>&nbsp;&nbsp;Log In</a>
+                    </form>
+                {{/if}}
             </div>
         </div>
     </nav>
@@ -29,6 +51,5 @@
         {{{body}}}
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-XYZ" crossorigin="anonymous"></script>
 </body>
 </html>

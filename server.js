@@ -1,5 +1,5 @@
 /*********************************************************************************
-WEB322 – Assignment 05
+WEB322 – Assignment 06
 I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
 
 Name: Mahin Ibne Alam 
@@ -15,6 +15,9 @@ const { engine } = require("express-handlebars");
 const handlebars = require("handlebars");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
+const authData = require("./auth-service");
+const clientSessions = require("client-sessions");
+
 
 const path = require("path");
 const storeService = require("./store-service.js");
@@ -31,6 +34,74 @@ cloudinary.config({
 	api_secret: "G9Zf3CH1guowKInJWcVPZbQXU7I",
 	secure: true,
 });
+// Configure clientSessions middleware here
+app.use(clientSessions({
+    cookieName: "session", // Cookie name (e.g., session)
+    secret: "mySecretKey12345", // A random string for signing the cookie
+    duration: 24 * 60 * 60 * 1000, // Duration of the session in milliseconds (1 day)
+    activeDuration: 1000 * 60 * 5 // Extend session by 5 minutes if active
+}));
+app.use(function (req, res, next) {
+    res.locals.session = req.session;
+    next();
+});
+function ensureLogin(req, res, next) {
+	if (!req.session.user) {
+	  res.redirect('/login');
+	} else {
+	  next();
+	}
+  }
+//new routes
+// GET /login
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+// GET /register
+app.get("/register", (req, res) => {
+    res.render("register");
+});
+
+// POST /register
+app.post("/register", (req, res) => {
+    authData.registerUser(req.body)
+        .then(() => {
+            res.render("register", { successMessage: "User created" });
+        })
+        .catch((err) => {
+            res.render("register", { errorMessage: err, userName: req.body.userName });
+        });
+});
+
+// POST /login
+app.post("/login", (req, res) => {
+    req.body.userAgent = req.get('User-Agent'); // Set the user-agent
+    authData.checkUser(req.body)
+        .then((user) => {
+            req.session.user = {
+                userName: user.userName,
+                email: user.email,
+                loginHistory: user.loginHistory
+            };
+            res.redirect("/items");
+        })
+        .catch((err) => {
+            res.render("login", { errorMessage: err, userName: req.body.userName });
+        });
+});
+
+// GET /logout
+app.get("/logout", (req, res) => {
+    req.session.reset(); // Reset the session
+    res.redirect("/");
+});
+
+// GET /userHistory (Protected by ensureLogin)
+app.get("/userHistory", ensureLogin, (req, res) => {
+    res.render("userHistory");
+});
+//new routes added
 
 app.use(function (req, res, next) {
 	let route = req.path.substring(1);
@@ -101,7 +172,7 @@ app.get("/about", (req, res) => {
 
 
 // Route for displaying the "Add Post" page
-app.get("/items/add", (req, res) => {
+app.get("/items/add", ensureLogin,(req, res) => {
     // Call to get all categories
     storeService.getAllCategories()
         .then((categories) => {
@@ -159,7 +230,7 @@ app.get("/shop", async (req, res) => {
 	res.render("shop", { data: viewData });
   });
 //
-app.get("/items", (req, res) => {
+app.get("/items",ensureLogin, (req, res) => {
 	const category = req.query.category;
 	const minDate = req.query.minDate;
   
@@ -187,7 +258,7 @@ app.get("/items", (req, res) => {
   });
   
  
-  app.get('/categories', (req, res) => {
+  app.get('/categories',ensureLogin, (req, res) => {
     storeService.getAllCategories()
         .then((categories) => {
             // Pass the categories data to the view
@@ -200,12 +271,12 @@ app.get("/items", (req, res) => {
 
 //
 // GET: Render Add Category Form
-app.get("/categories/add", (req, res) => {
+app.get("/categories/add",ensureLogin, (req, res) => {
     res.render("addCategory"); 
 });
 
 // POST: Handle Add Category Form Submission
-app.post("/categories/add", (req, res) => {
+app.post("/categories/add",ensureLogin, (req, res) => {
     storeService.addCategory(req.body)
         .then(() => {
             res.redirect("/categories"); // Redirect to /categories on success
@@ -216,7 +287,7 @@ app.post("/categories/add", (req, res) => {
 });
 
 // GET: Delete Category by ID
-app.get("/categories/delete/:id", (req, res) => {
+app.get("/categories/delete/:id",ensureLogin, (req, res) => {
     storeService.deleteCategoryById(req.params.id)
         .then(() => {
             res.redirect("/categories"); // Redirect to /categories on success
@@ -225,7 +296,7 @@ app.get("/categories/delete/:id", (req, res) => {
             res.status(500).send("Unable to Remove Category / Category not found: " + err);
         });
 });
-app.post("/items/add", upload.single("featureImage"), (req, res) => {
+app.post("/items/add",ensureLogin, upload.single("featureImage"), (req, res) => {
 	if (req.file) {
 		let streamUpload = (req) => {
 			return new Promise((resolve, reject) => {
@@ -271,7 +342,7 @@ app.post("/items/add", upload.single("featureImage"), (req, res) => {
 	}
 });
 // GET: Delete Item by ID
-app.get("/Items/delete/:id", (req, res) => {
+app.get("/Items/delete/:id",ensureLogin, (req, res) => {
     const itemId = req.params.id;
 
     storeService.deletePostById(itemId)
@@ -287,7 +358,7 @@ app.get("/Items/delete/:id", (req, res) => {
 
 
 
-app.get("/items/:id", (req, res) => {
+app.get("/items/:id",ensureLogin, (req, res) => {
 	const itemId = req.params.id;
 	storeService.getItemById(itemId)
 		.then((item) => {
@@ -352,6 +423,7 @@ app.use((req, res, next) => {
 });
 
 storeService.initialize()
+.then(authData.initialize)
 	.then(() => {
 		app.listen(HTTP_PORT, () => {
 			console.log(`Express http server listening on ${HTTP_PORT}`);
