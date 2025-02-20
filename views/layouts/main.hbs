@@ -8,44 +8,34 @@
     <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">WEB322 - Mahin Ibne Alam</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    {{#navLink "/about"}}About{{/navLink}}
-                    {{#navLink "/items"}}Items{{/navLink}}
-                    {{#navLink "/shop"}}Shop{{/navLink}}
-                    {{#navLink "/categories"}}Categories{{/navLink}}
-                </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+        <!-- Facebook-style Logo (Left) -->
+        <a class="navbar-brand fw-bold fs-4" href="#">Facebook</a>
 
-                <!-- Conditionally rendered links based on session.user -->
-                {{#if session.user}}
-                    <!-- If user is logged in -->
-                    <form class="navbar-form navbar-right">
-                        <div class="dropdown">
-                            <button class="dropdown-toggle" type="button">
-                                <span class="bi bi-person"></span>&nbsp;&nbsp;{{session.user.userName}}&nbsp;&nbsp;
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/userHistory">User History</a>
-                                <a class="dropdown-item" href="/logout">Log Out</a>
-                            </div>
+        <!-- Centered Log In / Sign Up Form -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            {{#if session.user}}
+                <form class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button">
+                            <span class="bi bi-person"></span>&nbsp;&nbsp;{{session.user.userName}}&nbsp;&nbsp;
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/userHistory">User History</a>
+                            <a class="dropdown-item" href="/logout">Log Out</a>
                         </div>
-                    </form>
-                {{else}}
-                    <!-- If user is NOT logged in -->
-                    <form class="navbar-form navbar-right">
-                        <a href="/register" class="btn btn-success"><span class="bi bi-cog"></span>&nbsp;&nbsp;Register</a>
-                        <a href="/login" class="btn btn-primary"><span class="bi bi-chevron-right"></span>&nbsp;&nbsp;Log In</a>
-                    </form>
-                {{/if}}
-            </div>
+                    </div>
+                </form>
+            {{else}}
+                <form class="d-flex justify-content-center align-items-center gap-3">
+                    <a href="/register" class="btn btn-success fw-bold px-4">Sign Up</a>
+                    <a href="/login" class="btn btn-light fw-bold px-4">Log In</a>
+                </form>
+            {{/if}}
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="container">
         {{{body}}}
